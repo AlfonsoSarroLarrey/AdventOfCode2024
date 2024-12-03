@@ -7,18 +7,18 @@ import java.util.Scanner;
 
 import static java.lang.Math.abs;
 
-public class Main {
+public class MainDay1 {
     private static final Integer LEFT = 0;
     private static final Integer RIGHT = 1;
 
     public static void main(String[] args) {
         ArrayList<ArrayList<Integer>> fullList;
-        Main main = new Main();
-        fullList = main.readList("./src/resources/InputDay1.txt");
-        main.sortList(fullList.get(LEFT));
-        main.sortList(fullList.get(RIGHT));
-        int totalDistance = main.calcDistance(fullList.get(LEFT), fullList.get(RIGHT));
-        int similarityScore = main.calcSimScore(fullList.get(LEFT), fullList.get(RIGHT));
+        MainDay1 mainDay1 = new MainDay1();
+        fullList = mainDay1.readList("./src/resources/InputDay1.txt");
+        mainDay1.sortList(fullList.get(LEFT));
+        mainDay1.sortList(fullList.get(RIGHT));
+        int totalDistance = mainDay1.calcDistance(fullList.get(LEFT), fullList.get(RIGHT));
+        int similarityScore = mainDay1.calcSimScore(fullList.get(LEFT), fullList.get(RIGHT));
         System.out.println("Total distance is: " + totalDistance);
         System.out.println("Total similarity score is: " + similarityScore);
     }
