@@ -14,7 +14,7 @@ public class Main {
     public static void main(String[] args) {
         ArrayList<ArrayList<Integer>> fullList;
         Main main = new Main();
-        fullList = main.readList("./src/resources/InputListDay1.txt");
+        fullList = main.readList("./src/resources/InputDay1.txt");
         main.sortList(fullList.get(LEFT));
         main.sortList(fullList.get(RIGHT));
         int totalDistance = main.calcDistance(fullList.get(LEFT), fullList.get(RIGHT));
