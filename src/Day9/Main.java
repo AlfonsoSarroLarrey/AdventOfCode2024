@@ -10,9 +10,10 @@ public class Main {
     public static void main(String[] args) {
         Main main = new Main();
         ArrayList<ArrayList<Integer>> diskMap = main.readDiskMap("./src/resources/InputDay9.txt");
-        System.out.println();
-        ArrayList<ArrayList<Integer>> compactedDiskMap = main.compactDiskMap(diskMap);
-        System.out.println();
+        main.compactDiskMap(diskMap);
+        long checksum = main.calcChecksum(diskMap);
+        System.out.println("The filesystem checksum is: " + checksum);
+
     }
 
     private ArrayList<ArrayList<Integer>> readDiskMap(String fileName) {
@@ -43,27 +44,33 @@ public class Main {
         }
     }
 
-    private ArrayList<ArrayList<Integer>> compactDiskMap(ArrayList<ArrayList<Integer>> diskMap) {
+    private void compactDiskMap(ArrayList<ArrayList<Integer>> diskMap) {
         int left = 0;
         int right = diskMap.size() - 1;
 
+        int lastUsedPos = 0;
+        int i;
+
         while (left < right) {
-            if(diskMap.get(right).getFirst() == -1 || diskMap.get(right).isEmpty()) {
+            if(diskMap.get(right).isEmpty()) {
+                diskMap.remove(diskMap.size() - 1);
+                right--;
+            } else if (diskMap.get(right).getFirst() == -1) {
                 diskMap.remove(diskMap.size() - 1);
                 right--;
             }
 
             int numsToTransfer = diskMap.get(right).size();
-            int lastUsedPos = 0;
-            int i;
+
 
             while(numsToTransfer != 0) {
-                if(diskMap.get(left).getFirst() != -1 || diskMap.get(left).isEmpty()) {
+                if(diskMap.get(left).isEmpty()) {
+                    left++;
+                } else if (diskMap.get(left).getLast() != -1) {
                     left++;
                 }
                 for (i = lastUsedPos; i < diskMap.get(left).size() && numsToTransfer != 0; i++) {
-                    diskMap.get(left).set(i, diskMap.get(right).getLast());
-                    diskMap.get(right).remove(diskMap.get(right).size() - 1);
+                    diskMap.get(left).set(i, diskMap.get(right).remove(diskMap.get(right).size() - 1));
                     numsToTransfer--;
                 }
 
@@ -71,15 +78,30 @@ public class Main {
                     lastUsedPos = i;
                     right--;
                 }
-                else {
+                if(i == diskMap.get(left).size()){
                     lastUsedPos = 0;
                     left++;
                 }
             }
-
-            diskMap.remove(diskMap.size() - 1);
-
         }
-        return diskMap;
+    }
+
+    private long calcChecksum(ArrayList<ArrayList<Integer>> compactedDiskMap) {
+        long pos = 0;
+        long checkSum = 0;
+        boolean stop = false;
+
+        for (int i = 0; i < compactedDiskMap.size(); i++) {
+            for (int j = 0; j < compactedDiskMap.get(i).size(); j++) {
+                if(compactedDiskMap.get(i).get(j) == -1) {
+                    stop = true;
+                    break;
+                }
+                checkSum = checkSum + (pos * compactedDiskMap.get(i).get(j));
+                pos++;
+            }
+            if(stop) { break; }
+        }
+        return checkSum;
     }
 }
