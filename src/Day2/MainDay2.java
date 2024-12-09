@@ -13,12 +13,15 @@ public class MainDay2 {
     private static final int NOT_SAFE = 0;
     private static final int SAFE = 1;
 
+    private static final int PART = 2;
+
     public static void main(String[] args) {
         ArrayList<ArrayList<Integer>> fullReport;
         MainDay2 mainDay2 = new MainDay2();
         fullReport = mainDay2.readReports("./src/resources/InputDay2.txt");
         int safeReports = mainDay2.calcSafeReports(fullReport);
-        System.out.println("Total safe reports: " + safeReports);
+        System.out.println("To change from part one to part two of the solution, change the value of the constant accordingly.");
+        System.out.println("Total safe reports (Part " + PART + ": " + safeReports);
     }
 
     private int calcSafeReports(ArrayList<ArrayList<Integer>> fullReport) {
