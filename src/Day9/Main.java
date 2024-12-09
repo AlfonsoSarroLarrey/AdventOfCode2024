@@ -10,7 +10,22 @@ public class Main {
     public static void main(String[] args) {
         Main main = new Main();
         ArrayList<ArrayList<Integer>> diskMap = main.readDiskMap("./src/resources/InputDay9.txt");
-        main.compactDiskMap(diskMap);
+
+        System.out.println("Which part do you want to calculate the checksum for?");
+        int part = System.console().readLine().charAt(0) - '0';
+
+        if(part == 1) {
+            main.compactDiskMap(diskMap);
+        }
+        else if(part == 2) {
+            main.altCompactDiskMap(diskMap);
+        }
+        else {
+            System.out.println("Please input a correct part, either part 1 or 2.");
+            System.exit(0);
+        }
+
+
         long checksum = main.calcChecksum(diskMap);
         System.out.println("The filesystem checksum is: " + checksum);
 
@@ -86,21 +101,21 @@ public class Main {
         }
     }
 
+    private void altCompactDiskMap(ArrayList<ArrayList<Integer>> diskMap) {
+
+    }
+
     private long calcChecksum(ArrayList<ArrayList<Integer>> compactedDiskMap) {
         long pos = 0;
         long checkSum = 0;
-        boolean stop = false;
 
         for (int i = 0; i < compactedDiskMap.size(); i++) {
             for (int j = 0; j < compactedDiskMap.get(i).size(); j++) {
-                if(compactedDiskMap.get(i).get(j) == -1) {
-                    stop = true;
-                    break;
+                if(compactedDiskMap.get(i).get(j) != -1) {
+                    checkSum = checkSum + (pos * compactedDiskMap.get(i).get(j));
+                    pos++;
                 }
-                checkSum = checkSum + (pos * compactedDiskMap.get(i).get(j));
-                pos++;
             }
-            if(stop) { break; }
         }
         return checkSum;
     }
