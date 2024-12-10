@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 import static java.lang.Math.abs;
 
-public class MainDay2 {
+public class Main {
     private static final boolean ASCENDING = true;
     private static final boolean DESCENDING = false;
     private static final int NOT_SAFE = 0;
@@ -17,9 +17,9 @@ public class MainDay2 {
 
     public static void main(String[] args) {
         ArrayList<ArrayList<Integer>> fullReport;
-        MainDay2 mainDay2 = new MainDay2();
-        fullReport = mainDay2.readReports("./src/resources/InputDay2.txt");
-        int safeReports = mainDay2.calcSafeReports(fullReport);
+        Main main = new Main();
+        fullReport = main.readReports("./src/resources/InputDay2.txt");
+        int safeReports = main.calcSafeReports(fullReport);
         System.out.println("To change from part one to part two of the solution, change the value of the constant accordingly.");
         System.out.println("Total safe reports (Part " + PART + ": " + safeReports);
     }
