@@ -12,7 +12,10 @@ public class Main {
         ArrayList<ArrayList<Integer>> diskMap = main.readDiskMap("./src/resources/InputDay9.txt");
 
         System.out.println("Which part do you want to calculate the checksum for?");
-        int part = System.console().readLine().charAt(0) - '0';
+        Scanner in = new Scanner(System.in);
+
+        String partStr = in.nextLine();
+        int part = partStr.charAt(0) - '0';
 
         if(part == 1) {
             main.compactDiskMap(diskMap);
@@ -102,7 +105,43 @@ public class Main {
     }
 
     private void altCompactDiskMap(ArrayList<ArrayList<Integer>> diskMap) {
+        for (int right = diskMap.size() - 1; right > 0; right--) {
+            if (!diskMap.get(right).isEmpty()) {
+                if(diskMap.get(right).getFirst() != -1) {
+                    for (int left = 0; left < right; left++) {
+                        if (diskMap.get(right).size() <= getEmptySpace(diskMap.get(left))) {
+                            insertArray(diskMap.get(right), diskMap.get(left));
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    }
 
+    private int getEmptySpace(ArrayList<Integer> file) {
+        int spaceLeft = 0;
+        for (int i = file.size() - 1; i >= 0 ; i--) {
+            if(file.get(i) == -1) { spaceLeft++; } else { break; }
+        }
+
+        return spaceLeft;
+    }
+
+    private void insertArray(ArrayList<Integer> origin, ArrayList<Integer> dest) {
+        int initialCopyPos = 0;
+
+        for (int i = 0; i < dest.size(); i++) {
+            if(dest.get(i) == -1) {
+                initialCopyPos = i;
+                break;
+            }
+        }
+
+        for (int i = 0; i < origin.size(); i++) {
+            dest.set(initialCopyPos + i, origin.get(i));
+            origin.set(i, -1);
+        }
     }
 
     private long calcChecksum(ArrayList<ArrayList<Integer>> compactedDiskMap) {
@@ -113,8 +152,8 @@ public class Main {
             for (int j = 0; j < compactedDiskMap.get(i).size(); j++) {
                 if(compactedDiskMap.get(i).get(j) != -1) {
                     checkSum = checkSum + (pos * compactedDiskMap.get(i).get(j));
-                    pos++;
                 }
+                pos++;
             }
         }
         return checkSum;
