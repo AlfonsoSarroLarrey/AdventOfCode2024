@@ -13,50 +13,164 @@ public class Main {
     private static final int NOT_SAFE = 0;
     private static final int SAFE = 1;
 
-    private static final int PART = 2;
-
     public static void main(String[] args) {
         ArrayList<ArrayList<Integer>> fullReport;
         Main main = new Main();
         fullReport = main.readReports("./src/resources/InputDay2.txt");
-        int safeReports = main.calcSafeReports(fullReport);
-        System.out.println("To change from part one to part two of the solution, change the value of the constant accordingly.");
-        System.out.println("Total safe reports (Part " + PART + ": " + safeReports);
+
+        System.out.println("Which part will be used to check the safety of the report?");
+        Scanner in = new Scanner(System.in);
+
+        String partStr = in.nextLine();
+        int part = partStr.charAt(0) - '0';
+
+        int safeReports = main.calcSafeReports(fullReport, part);
+        System.out.println("Total safe reports: " + safeReports);
     }
 
-    private int calcSafeReports(ArrayList<ArrayList<Integer>> fullReport) {
+    private int calcSafeReports(ArrayList<ArrayList<Integer>> fullReport, int part) {
         int totalSafeReports = 0;
         for (int i = 0; i < fullReport.size(); i++) {
-            totalSafeReports = totalSafeReports + checkSafety(fullReport.get(i));
+//            if(checkSafety(fullReport.get(i), part, true) == NOT_SAFE) {
+//                System.out.println(fullReport.get(i));
+//                totalSafeReports++;
+//            }
+            totalSafeReports = totalSafeReports + checkSafety(fullReport.get(i), part, true);
+
         }
 
         return totalSafeReports;
     }
 
-    private int checkSafety(ArrayList<Integer> report) {
+    private int checkSafety(ArrayList<Integer> report, int part, boolean canMakeMistake) {
         int first_num = report.getFirst();
         int second_num = report.get(1);
         boolean level_direction;
 
-        if(abs(first_num - second_num) > 3) { return NOT_SAFE; }
+        if(abs(first_num - second_num) > 3) {
+            if(part == 1 || !canMakeMistake) {
+                return NOT_SAFE;
+            }
+
+            ArrayList<Integer> auxReport1 =  new ArrayList<>(report);
+            auxReport1.remove(0);
+            if(checkSafety(auxReport1, part, false) == SAFE) {
+                return SAFE;
+            }
+
+            ArrayList<Integer> auxReport2 =  new ArrayList<>(report);
+            auxReport2.remove(1);
+
+            return checkSafety(auxReport2, part, false);
+        }
 
         if(first_num > second_num) {
             level_direction = DESCENDING;
+            //Checking edge cases where first descends and rest is ascend correctly. EX: 2, 1, 2, 3, 4
+            if(report.get(1) <= report.get(2)) {
+                if(!canMakeMistake) {
+                    return NOT_SAFE;
+                }
+                ArrayList<Integer> auxReport1 =  new ArrayList<>(report);
+                auxReport1.remove(0);
+                if(checkSafety(auxReport1, part, false) == SAFE) {
+                    return SAFE;
+                }
+
+                ArrayList<Integer> auxReport2 =  new ArrayList<>(report);
+                auxReport2.remove(1);
+
+                return checkSafety(auxReport2, part, false);
+            }
         }
         else if(first_num < second_num) {
             level_direction = ASCENDING;
+            //Checking edge cases where first ascends and rest is descend correctly. EX: 9, 10, 9, 8, 7
+            if(report.get(1) >= report.get(2)) {
+                if(!canMakeMistake) {
+                    return NOT_SAFE;
+                }
+                ArrayList<Integer> auxReport1 =  new ArrayList<>(report);
+                auxReport1.remove(0);
+                if(checkSafety(auxReport1, part, false) == SAFE) {
+                    return SAFE;
+                }
+
+                ArrayList<Integer> auxReport2 =  new ArrayList<>(report);
+                auxReport2.remove(1);
+
+                return checkSafety(auxReport2, part, false);
+            }
         }
         else {
-            return NOT_SAFE;
+            if(part == 1 || !canMakeMistake) {
+                return NOT_SAFE;
+            }
+
+            ArrayList<Integer> auxReport1 =  new ArrayList<>(report);
+            auxReport1.remove(0);
+            if(checkSafety(auxReport1, part, false) == SAFE) {
+                return SAFE;
+            }
+
+            ArrayList<Integer> auxReport2 =  new ArrayList<>(report);
+            auxReport2.remove(1);
+
+            return checkSafety(auxReport2, part, false);
         }
 
 
-        for (int i = 1; i < report.size() - 1; i++) {
-            if(abs(report.get(i) - report.get(i+1)) > 3) { return NOT_SAFE; }
+        for (int i = 1; i < report.size(); i++) {
+            if(abs(report.get(i-1) - report.get(i)) > 3) {
+                if(part == 1 || !canMakeMistake) {
+                    return NOT_SAFE;
+                }
 
-            if(report.get(i) <= report.get(i+1) && level_direction == DESCENDING) { return NOT_SAFE; }
+                ArrayList<Integer> auxReport1 = new ArrayList<>(report);
+                auxReport1.remove(i-1);
+                if(checkSafety(auxReport1, part, false) == SAFE) {
+                    return SAFE;
+                }
 
-            if(report.get(i) >= report.get(i+1) && level_direction == ASCENDING) { return NOT_SAFE; }
+                ArrayList<Integer> auxReport2 =  new ArrayList<>(report);
+                auxReport2.remove(i);
+
+                return checkSafety(auxReport2, part, false);
+            }
+
+            if(report.get(i-1) <= report.get(i) && level_direction == DESCENDING) {
+                if(part == 1 || !canMakeMistake) {
+                    return NOT_SAFE;
+                }
+
+                ArrayList<Integer> auxReport1 = new ArrayList<>(report);
+                auxReport1.remove(i-1);
+                if(checkSafety(auxReport1, part, false) == SAFE) {
+                    return SAFE;
+                }
+
+                ArrayList<Integer> auxReport2 =  new ArrayList<>(report);
+                auxReport2.remove(i);
+
+                return checkSafety(auxReport2, part, false);
+            }
+
+            if(report.get(i-1) >= report.get(i) && level_direction == ASCENDING) {
+                if(part == 1 || !canMakeMistake) {
+                    return NOT_SAFE;
+                }
+
+                ArrayList<Integer> auxReport1 = new ArrayList<>(report);
+                auxReport1.remove(i-1);
+                if(checkSafety(auxReport1, part, false) == SAFE) {
+                    return SAFE;
+                }
+
+                ArrayList<Integer> auxReport2 = new ArrayList<>(report);
+                auxReport2.remove(i);
+
+                return checkSafety(auxReport2, part, false);
+            }
         }
 
         return SAFE;
